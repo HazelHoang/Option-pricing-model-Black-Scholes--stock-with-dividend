@@ -1,0 +1,21 @@
+# Option-pricing-model-Black-Scholes- Assuming stock pays dividend.
+
+from math import *
+from scipy.stats import norm
+
+#first define these 2 functions
+def SAdjusted(S, exp, T, dividend):  #dividend yield in percentage
+    return S*exp(-dividend*T)
+def d1(SAdjusted,X,T,r,sigma):
+    return (log(SAdjusted/X)+(r+sigma*sigma/2.)*T)/(sigma*sqrt(T))
+
+def d2(SAdjusted,X,T,r,sigma):
+    return d1(SAdjusted,X,T,r,sigma)-sigma*sqrt(T)
+
+#define the call option price function
+def bs_call(S,X,T,r,sigma,dividend):
+     return SAdjusted + norm.cdf(d1(SAdjusted,X,T,r,sigma))-X*exp(-r*T)*norm.cdf(d2(SAdjusted,X,T,r,sigma))
+    
+#define the put option price function
+def bs_put(S,X,T,r,sigma):
+    return X*exp(-r*T)*norm.cdf(-d2(S,X,T,r,sigma)) - S*norm.cdf(-d1(S,X,T,r,sigma))
